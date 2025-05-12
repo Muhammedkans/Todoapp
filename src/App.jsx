@@ -6,6 +6,8 @@ import { Route, Routes } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Todos from './pages/Todos'
+import Navbar from './components/Navbar'
+import PrivateRoutes from './components/PrivateRoutes'
 
 
 function App() {
@@ -13,8 +15,13 @@ function App() {
 
   return (
     <>
+    <Navbar/>
     <Routes>
-      <Route path='/'  element={ <Todos/>} />
+      <Route path='/'  element={ 
+        <PrivateRoutes> 
+          <Todos/>
+        </PrivateRoutes>
+    } />
       <Route path='/login' element={ <Login />}  />
       <Route  path='/register' element={ <Register/>  } />
     </Routes>

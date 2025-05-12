@@ -7,7 +7,7 @@ const token  = localStorage.getItem("token")|| null;
 
 export const registerUser = createAsyncThunk('auth/register', async (formData ,thunkAPI)=>{
 try{
-  const response = await axios.post("http://localhost:7777/user/register/todo",formData);
+  const response = await axios.post("http://localhost:7777/user/register",formData);
   console.log(response.data);
   return response.data;
 }catch(error){
@@ -19,14 +19,15 @@ try{
 export const loginUser  = createAsyncThunk(
   "auth/login", async(formData , thunkAPI)=>{
     try{
-       const response = await axios.post("http://localhost:7777/user/login/todo",formData);
+       const response = await axios.post("http://localhost:7777/user/login",formData);
+       console.log(response.data);
+       return response.data;
     }catch(error){
       return thunkAPI.rejectWithValue(error.response.data.message);
     }
    
   }
 );
-
 
 const authSlice = createSlice({
   name:"auth",
