@@ -5,10 +5,10 @@ import axios from 'axios';
 
 const token  = localStorage.getItem("token")|| null;
 
-const registerUser = createAsyncThunk('auth/register', async (formData ,thunkAPI)=>{
+export const registerUser = createAsyncThunk('auth/register', async (formData ,thunkAPI)=>{
 try{
   const response = await axios.post("http://localhost:7777/user/register/todo",formData);
-
+  console.log(response.data);
   return response.data;
 }catch(error){
   return thunkAPI.rejectWithValue(error.response.data.message);
@@ -16,7 +16,7 @@ try{
 });
 
 
-const loginUser  = createAsyncThunk(
+export const loginUser  = createAsyncThunk(
   "auth/login", async(formData , thunkAPI)=>{
     try{
        const response = await axios.post("http://localhost:7777/user/login/todo",formData);
@@ -51,13 +51,14 @@ const authSlice = createSlice({
     })
 
     builder.addCase(registerUser.fulfilled , (state,action)=>{
+      state.loading = false;
       state.user = action.payload.user;
       state.token = action.payload.token;
       localStorage.setItem('token',action.payload.token)
     })
 
     builder.addCase(registerUser.rejected,(state,action)=>{
-      state.loading =false;
+      state.loading = false;
       state.error = action.payload;
     })
 
