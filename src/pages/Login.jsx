@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from '../features/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch();
-
+ const navigate = useNavigate();
   const  {loading , error,} = useSelector((state)=>state.auth);
 
  
@@ -21,6 +22,7 @@ const Login = () => {
   const handleSubmit =(e)=>{
    e.preventDefault();
    dispatch(loginUser(formData));
+   navigate("/")
   }
 
   return (
