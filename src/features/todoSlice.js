@@ -29,7 +29,7 @@ export const addTodo =createAsyncThunk("Todo/addtodo",async (text , thunkAPI)=>{
   try{
     console.log(API);
     const token = localStorage.getItem("token");
-    console.log(token)
+    console.log(token);
 const response = await axios.post(API,{title: text}, 
 {
 headers: {
@@ -37,7 +37,7 @@ headers: {
       }   
  }
 );
-console.log( "add todo", response);
+console.log( "add todo", response.data.newTodo);
  return response.data.newTodo;
   }catch(error){
     console.log(error);

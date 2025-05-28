@@ -1,25 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addTodo, deletTodo, fetchTodos } from '../features/todoSlice';
+import { useAddTodos, deleteTodo, useTodos } from '../features/todos/hooks/useTodos';
+ import { useQueryClient } from "@tanstack/react-query";
 
 const Todos = () => {
-  const dispatch = useDispatch();
-  const { loading, todos, error } = useSelector((state) => state.todo);
+  const queryClient = useQueryClient();
+  const [page,setPage] =useState(1);
+ console.log(useTodos())
+  const {data, isError, isLoading,error } = useTodos(page);
+  console.log(data);
+  const {mutate, isPending} =useAddTodos()
+ const {mutate:deleteTodos } = deleteTodo()
+  
   const [text, setText] = useState('');
  
-  useEffect(() => {
-    dispatch(fetchTodos());
-  }, [dispatch]);
-
-  const handleAddTodo = () => {
+ 
+  const handleAddTodo =  () => {
     if (text.trim() !== '') {
-      dispatch(addTodo(text));
+      mutate(text);
       setText('');
     }
   };
 
   const handleDeleteTodo = (id) => {
-    dispatch(deletTodo(id));
+       deleteTodos(id)
   };
 
   return (
@@ -32,12 +35,12 @@ const Todos = () => {
       />
       <button onClick={handleAddTodo}>Add</button>
 
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
+      {isLoading && <p>Loading...</p>}
+      {isError && <p>{error.message}</p>}
 
       <ul>
-        {todos && todos.length > 0 ? (
-          todos.map((todo) => (
+        {data && data.todos && data.todos.length > 0 ? (
+          data.todos.map((todo) => (
             <li key={todo._id} >
               <span>{todo.title}</span> {/* or todo.text if your backend sends "text" */}
               <button onClick={() => handleDeleteTodo(todo._id)}>Delete</button>
@@ -47,6 +50,13 @@ const Todos = () => {
           <p>No todos available</p>
         )}
       </ul>
+
+      <button disabled={page===1} onClick={()=>{setPage(p=> Math.max(p-1,1))}}>Previous</button>
+      <button onClick={()=> {
+        if(data.hasMore){
+          setPage(p=>p+1);
+        }
+      }  }>Next</button>
     </div>
   );
 };
